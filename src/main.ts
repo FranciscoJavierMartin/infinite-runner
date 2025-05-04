@@ -14,6 +14,7 @@ class Game {
     this.canvas.height = window.innerHeight;
 
     this.player = new Player(50, this.canvas.height - 50, 50, 50, '#f231a5');
+    this.player.y--;
   }
 
   public render(): void {
@@ -25,5 +26,11 @@ class Game {
 
 window.onload = () => {
   const game = new Game();
-  game.render();
+
+  function gameLoop() {
+    game.render();
+    requestAnimationFrame(gameLoop);
+  }
+
+  gameLoop();
 };
