@@ -7,6 +7,7 @@ class Game {
   private ctx: CanvasRenderingContext2D;
   private player: Player;
   private obstacleManager: ObstacleManager;
+  private lastTimestamp: number = 0;
 
   constructor() {
     this.canvas = document.getElementById('game-canvas') as HTMLCanvasElement;
@@ -19,7 +20,10 @@ class Game {
     this.obstacleManager = new ObstacleManager(this.canvas, this.ctx);
   }
 
-  public render(): void {
+  public render(timestamp: number): void {
+    const deltatime = timestamp - this.lastTimestamp;
+    this.lastTimestamp = timestamp;
+
     this.ctx.fillStyle = '#0a0c21';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -29,17 +33,17 @@ class Game {
 
     // Updates
     this.player.update(this.canvas);
-    this.obstacleManager.update();
+    this.obstacleManager.update(deltatime);
   }
 }
 
 window.onload = () => {
   const game = new Game();
 
-  function gameLoop() {
-    game.render();
+  function gameLoop(timestamp: number) {
+    game.render(timestamp);
     requestAnimationFrame(gameLoop);
   }
 
-  gameLoop();
+  gameLoop(0);
 };

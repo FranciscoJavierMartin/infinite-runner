@@ -2,13 +2,12 @@ import Obstacle from '@/entities/Obstacle';
 
 export default class ObstacleManager {
   private obstacles: Obstacle[] = [];
+  private nextSpawnTime: number = 0;
 
   constructor(
     private canvas: HTMLCanvasElement,
     private ctx: CanvasRenderingContext2D,
-  ) {
-    this.createObstacle();
-  }
+  ) {}
 
   public draw(): void {
     this.obstacles.forEach((obstacle) => {
@@ -16,7 +15,14 @@ export default class ObstacleManager {
     });
   }
 
-  public update(): void {
+  public update(deltatime: number): void {
+    this.nextSpawnTime -= deltatime;
+
+    if (this.nextSpawnTime <= 0) {
+      this.createObstacle();
+      this.nextSpawnTime = 1000;
+    }
+
     this.obstacles.forEach((obstacle) => {
       obstacle.update();
     });
