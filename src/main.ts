@@ -14,7 +14,8 @@ class Game {
     this.canvas.height = window.innerHeight;
 
     this.player = new Player(50, this.canvas.height - 50, 50, 50, '#f231a5');
-    this.player.y--;
+
+    this.player.update(this.canvas);
   }
 
   public render(): void {
