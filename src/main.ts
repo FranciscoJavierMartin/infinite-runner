@@ -14,14 +14,15 @@ class Game {
     this.canvas.height = window.innerHeight;
 
     this.player = new Player(50, this.canvas.height - 50, 50, 50, '#f231a5');
-
-    this.player.update(this.canvas);
   }
 
   public render(): void {
     this.ctx.fillStyle = '#0a0c21';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
     this.player.draw(this.ctx);
+
+    this.player.update(this.canvas);
   }
 }
 
