@@ -1,5 +1,7 @@
 import Player from '@/entities/Player';
 import ObstacleManager from '@/managers/ObstableManager';
+import TextManager from '@/managers/TextManager';
+import { INITIAL_GAME_SPEED } from '@/constants';
 import '@/style.css';
 
 class Game {
@@ -7,7 +9,11 @@ class Game {
   private ctx: CanvasRenderingContext2D;
   private player: Player;
   private obstacleManager: ObstacleManager;
+  private textManagaer: TextManager;
   private lastTimestamp: number = 0;
+  private gameSpeed: number = INITIAL_GAME_SPEED;
+  private isGameOver: boolean = false;
+  private isPlaying: boolean = false;
 
   constructor() {
     this.canvas = document.getElementById('game-canvas') as HTMLCanvasElement;
@@ -18,6 +24,8 @@ class Game {
 
     this.player = new Player(50, this.canvas.height - 50, 50, 50, '#f231a5');
     this.obstacleManager = new ObstacleManager(this.canvas, this.ctx);
+    this.textManagaer = new TextManager(this.canvas, this.ctx);
+    this.setupControls();
   }
 
   public render(timestamp: number): void {
@@ -31,9 +39,48 @@ class Game {
     this.player.draw(this.ctx);
     this.obstacleManager.draw();
 
+    if (!this.isPlaying) {
+      this.textManagaer.drawInitialScreen();
+    }
+
     // Updates
-    this.player.update(this.canvas);
-    this.obstacleManager.update(deltatime);
+    if (this.isPlaying && !this.isGameOver) {
+      this.player.update(this.canvas);
+      this.obstacleManager.update(deltatime, this.gameSpeed);
+      this.gameSpeed += 0.3 * (deltatime / 1000);
+
+      if (this.obstacleManager.checkCollision(this.player)) {
+        this.isGameOver = true;
+      }
+    }
+
+    if (this.isGameOver) {
+      this.textManagaer.drawGameOverScreen();
+    }
+  }
+
+  private setupControls(): void {
+    window.addEventListener('keydown', (event) => {
+      if (event.code === 'Space') {
+        this.handleGameAction();
+      }
+    });
+  }
+
+  private handleGameAction(): void {
+    if (!this.isPlaying && !this.isGameOver) {
+      this.isPlaying = true;
+    } else if (this.isGameOver) {
+      this.resetGame();
+    }
+  }
+
+  private resetGame(): void {
+    this.isGameOver = false;
+    this.isPlaying = true;
+    this.gameSpeed = INITIAL_GAME_SPEED;
+    this.obstacleManager.reset();
+    this.player.reset(50, this.canvas.height - 50);
   }
 }
 

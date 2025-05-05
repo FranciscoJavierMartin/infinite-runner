@@ -36,6 +36,13 @@ export default class Player {
     }
   }
 
+  public reset(x: number, y: number): void {
+    this.x = x;
+    this.y = y;
+    this.dy = 0;
+    this.grounded = true;
+  }
+
   private setupControls(): void {
     window.addEventListener('keydown', (e) => {
       if (e.code === 'Space') {
