@@ -1,6 +1,7 @@
 import Player from '@/entities/Player';
 import ObstacleManager from '@/managers/ObstableManager';
 import TextManager from '@/managers/TextManager';
+import ScoreManager from '@/managers/ScoreManager';
 import { INITIAL_GAME_SPEED } from '@/constants';
 import '@/style.css';
 
@@ -10,6 +11,7 @@ class Game {
   private player: Player;
   private obstacleManager: ObstacleManager;
   private textManagaer: TextManager;
+  private scoreManager: ScoreManager;
   private lastTimestamp: number = 0;
   private gameSpeed: number = INITIAL_GAME_SPEED;
   private isGameOver: boolean = false;
@@ -25,6 +27,7 @@ class Game {
     this.player = new Player(50, this.canvas.height - 50, 50, 50, '#f231a5');
     this.obstacleManager = new ObstacleManager(this.canvas, this.ctx);
     this.textManagaer = new TextManager(this.canvas, this.ctx);
+    this.scoreManager = new ScoreManager();
     this.setupControls();
   }
 
@@ -39,6 +42,9 @@ class Game {
     this.player.draw(this.ctx);
     this.obstacleManager.draw();
 
+    this.textManagaer.drawScore(this.scoreManager.score);
+    this.textManagaer.drawHighScore(this.scoreManager.highScore);
+
     if (!this.isPlaying) {
       this.textManagaer.drawInitialScreen();
     }
@@ -47,6 +53,7 @@ class Game {
     if (this.isPlaying && !this.isGameOver) {
       this.player.update(this.canvas);
       this.obstacleManager.update(deltatime, this.gameSpeed);
+      this.scoreManager.update(deltatime);
       this.gameSpeed += 0.3 * (deltatime / 1000);
 
       if (this.obstacleManager.checkCollision(this.player)) {
@@ -56,6 +63,7 @@ class Game {
 
     if (this.isGameOver) {
       this.textManagaer.drawGameOverScreen();
+      this.scoreManager.updateHighScore();
     }
   }
 

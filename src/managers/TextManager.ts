@@ -30,6 +30,26 @@ export default class TextManager {
     );
   }
 
+  public drawScore(score: number): void {
+    this.drawText(
+      `Score: ${score.toString().padStart(6, '0')}`,
+      180,
+      50,
+      18,
+      'left',
+    );
+  }
+
+  public drawHighScore(highScore: number): void {
+    this.drawText(
+      `High score: ${highScore.toString().padStart(6, '0')}`,
+      this.canvas.width - 250,
+      50,
+      18,
+      'right',
+    );
+  }
+
   private drawText(
     text: string,
     x: number,
