@@ -59,7 +59,7 @@ export default class TextManager {
     color: string = '#ffffff',
   ): void {
     this.ctx.fillStyle = color;
-    this.ctx.font = `${size}px Arial`;
+    this.ctx.font = `${size}px "Press Start 2P"`;
     this.ctx.textAlign = align;
     this.ctx.fillText(text, x, y);
   }
