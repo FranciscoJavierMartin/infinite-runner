@@ -1,15 +1,33 @@
-import { GROUND_COLOR } from '@/constants';
+import { GROUND_COLOR, GROUND_TILE_SIZE } from '@/constants';
+import srcGround from '/ground.png';
 
 export default class Ground {
+  private sprite: HTMLImageElement;
+
   constructor(
     private x: number,
     private y: number,
     private width: number,
     private height: number,
-  ) {}
+  ) {
+    this.sprite = new Image();
+    this.sprite.src = srcGround;
+  }
 
   public draw(ctx: CanvasRenderingContext2D): void {
+    const tilesX = Math.ceil(this.width / GROUND_TILE_SIZE);
+
     ctx.fillStyle = GROUND_COLOR;
     ctx.fillRect(this.x, this.y, this.width, this.height);
+
+    for (let i = 0; i < tilesX; i++) {
+      ctx.drawImage(
+        this.sprite,
+        this.x + i * GROUND_TILE_SIZE,
+        this.y,
+        GROUND_TILE_SIZE,
+        GROUND_TILE_SIZE,
+      );
+    }
   }
 }
