@@ -2,6 +2,7 @@ import {
   INITIAL_GAME_SPEED,
   SPAWN_MAX_TIME,
   SPAWN_MIN_TIME,
+  GROUND_HEIGHT,
 } from '@/constants';
 import Obstacle from '@/entities/Obstacle';
 import Player from '@/entities/Player';
@@ -64,7 +65,7 @@ export default class ObstacleManager {
     const y = Math.random() < 0.5 ? 70 : 140;
     const obstacle = new Obstacle(
       this.canvas.width,
-      this.canvas.height - y,
+      this.canvas.height - GROUND_HEIGHT - y,
       30,
       70,
       '#fff000',

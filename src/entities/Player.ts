@@ -1,3 +1,5 @@
+import { GROUND_HEIGHT } from '@/constants';
+
 export default class Player {
   private dy: number = 0;
   private grounded: boolean = true;
@@ -19,14 +21,15 @@ export default class Player {
 
   public update(canvas: HTMLCanvasElement): void {
     this.y += this.dy;
+    const groundY = canvas.height - GROUND_HEIGHT;
 
-    if (this.y + this.height < canvas.height) {
+    if (this.y + this.height < groundY) {
       this.dy += 1;
       this.grounded = false;
     } else {
       this.dy = 0;
       this.grounded = true;
-      this.y = canvas.height - this.height;
+      this.y = groundY - this.height;
     }
   }
 

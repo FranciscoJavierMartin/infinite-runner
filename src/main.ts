@@ -1,15 +1,17 @@
 import Player from '@/entities/Player';
+import Ground from '@/entities/Ground';
 import ObstacleManager from '@/managers/ObstableManager';
 import TextManager from '@/managers/TextManager';
 import ScoreManager from '@/managers/ScoreManager';
 import AudioManager from '@/managers/AudioManager';
-import { INITIAL_GAME_SPEED } from '@/constants';
+import { GROUND_HEIGHT, INITIAL_GAME_SPEED } from '@/constants';
 import '@/style.css';
 
 class Game {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private player: Player;
+  private ground: Ground;
   private obstacleManager: ObstacleManager;
   private textManagaer: TextManager;
   private scoreManager: ScoreManager;
@@ -26,7 +28,19 @@ class Game {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
 
-    this.player = new Player(50, this.canvas.height - 50, 50, 50, '#f231a5');
+    this.ground = new Ground(
+      0,
+      this.canvas.height - GROUND_HEIGHT,
+      this.canvas.width,
+      GROUND_HEIGHT,
+    );
+    this.player = new Player(
+      50,
+      this.canvas.height - GROUND_HEIGHT - 50,
+      50,
+      50,
+      '#f231a5',
+    );
     this.obstacleManager = new ObstacleManager(this.canvas, this.ctx);
     this.textManagaer = new TextManager(this.canvas, this.ctx);
     this.scoreManager = new ScoreManager();
@@ -43,6 +57,7 @@ class Game {
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Elements
+    this.ground.draw(this.ctx);
     this.player.draw(this.ctx);
     this.obstacleManager.draw();
 
