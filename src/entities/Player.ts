@@ -30,9 +30,11 @@ export default class Player {
     }
   }
 
-  public jump(): void {
-    if (this.grounded) {
-      this.dy = -20;
+  public jump(jumpHeight: number = -20): void {
+    if (jumpHeight < -15) {
+      if (this.grounded) {
+        this.dy = jumpHeight;
+      }
     }
   }
 

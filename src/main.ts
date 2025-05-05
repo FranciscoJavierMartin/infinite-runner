@@ -2,6 +2,7 @@ import Player from '@/entities/Player';
 import ObstacleManager from '@/managers/ObstableManager';
 import TextManager from '@/managers/TextManager';
 import ScoreManager from '@/managers/ScoreManager';
+import AudioManager from '@/managers/AudioManager';
 import { INITIAL_GAME_SPEED } from '@/constants';
 import '@/style.css';
 
@@ -12,6 +13,7 @@ class Game {
   private obstacleManager: ObstacleManager;
   private textManagaer: TextManager;
   private scoreManager: ScoreManager;
+  private audioManager: AudioManager;
   private lastTimestamp: number = 0;
   private gameSpeed: number = INITIAL_GAME_SPEED;
   private isGameOver: boolean = false;
@@ -28,6 +30,8 @@ class Game {
     this.obstacleManager = new ObstacleManager(this.canvas, this.ctx);
     this.textManagaer = new TextManager(this.canvas, this.ctx);
     this.scoreManager = new ScoreManager();
+    this.audioManager = new AudioManager();
+
     this.setupControls();
   }
 
@@ -51,7 +55,7 @@ class Game {
 
     // Updates
     if (this.isPlaying && !this.isGameOver) {
-      this.player.update(this.canvas);
+      this.updatePlayer();
       this.obstacleManager.update(deltatime, this.gameSpeed);
       this.scoreManager.update(deltatime);
       this.gameSpeed += 0.3 * (deltatime / 1000);
@@ -76,6 +80,8 @@ class Game {
   }
 
   private handleGameAction(): void {
+    this.initializeAudio();
+
     if (!this.isPlaying && !this.isGameOver) {
       this.isPlaying = true;
     } else if (this.isGameOver) {
@@ -89,6 +95,23 @@ class Game {
     this.gameSpeed = INITIAL_GAME_SPEED;
     this.obstacleManager.reset();
     this.player.reset(50, this.canvas.height - 50);
+  }
+
+  private async initializeAudio(): Promise<void> {
+    try {
+      await this.audioManager.initialize();
+    } catch (error) {
+      console.error('Error initializing audio:', error);
+    }
+  }
+
+  private updatePlayer(): void {
+    if (this.audioManager.initialized) {
+      const jumpHeight = this.audioManager.getJumpHeight();
+      this.player.jump(jumpHeight);
+    }
+
+    this.player.update(this.canvas);
   }
 }
 
