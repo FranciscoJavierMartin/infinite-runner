@@ -13,15 +13,15 @@ import {
 import '@/style.css';
 
 class Game {
-  private canvas: HTMLCanvasElement;
-  private ctx: CanvasRenderingContext2D;
-  private player: Player;
-  private ground: Ground;
-  private background: Background;
-  private obstacleManager: ObstacleManager;
-  private textManagaer: TextManager;
-  private scoreManager: ScoreManager;
-  private audioManager: AudioManager;
+  private canvas!: HTMLCanvasElement;
+  private ctx!: CanvasRenderingContext2D;
+  private player!: Player;
+  private ground!: Ground;
+  private background!: Background;
+  private obstacleManager!: ObstacleManager;
+  private textManagaer!: TextManager;
+  private scoreManager!: ScoreManager;
+  private audioManager!: AudioManager;
   private lastTimestamp: number = 0;
   private gameSpeed: number = INITIAL_GAME_SPEED;
   private isGameOver: boolean = false;
