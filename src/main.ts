@@ -1,10 +1,15 @@
 import Player from '@/entities/Player';
 import Ground from '@/entities/Ground';
+import Background from '@/entities/Background';
 import ObstacleManager from '@/managers/ObstableManager';
 import TextManager from '@/managers/TextManager';
 import ScoreManager from '@/managers/ScoreManager';
 import AudioManager from '@/managers/AudioManager';
-import { GROUND_HEIGHT, INITIAL_GAME_SPEED } from '@/constants';
+import {
+  GROUND_HEIGHT,
+  INITIAL_GAME_SPEED,
+  PLAYER_SPRITE_SIZE,
+} from '@/constants';
 import '@/style.css';
 
 class Game {
@@ -12,6 +17,7 @@ class Game {
   private ctx: CanvasRenderingContext2D;
   private player: Player;
   private ground: Ground;
+  private background: Background;
   private obstacleManager: ObstacleManager;
   private textManagaer: TextManager;
   private scoreManager: ScoreManager;
@@ -22,12 +28,19 @@ class Game {
   private isPlaying: boolean = false;
 
   constructor() {
+    this.initializeGame();
+    this.setupCanvas();
+    this.setupControls();
+  }
+
+  private initializeGame(): void {
     this.canvas = document.getElementById('game-canvas') as HTMLCanvasElement;
     this.ctx = this.canvas.getContext('2d')!;
 
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
 
+    this.background = new Background(this.canvas);
     this.ground = new Ground(
       0,
       this.canvas.height - GROUND_HEIGHT,
@@ -36,10 +49,7 @@ class Game {
     );
     this.player = new Player(
       50,
-      this.canvas.height - GROUND_HEIGHT - 50,
-      50,
-      50,
-      '#f231a5',
+      this.canvas.height - GROUND_HEIGHT - PLAYER_SPRITE_SIZE,
     );
     this.obstacleManager = new ObstacleManager(this.canvas, this.ctx);
     this.textManagaer = new TextManager(this.canvas, this.ctx);
@@ -57,6 +67,7 @@ class Game {
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Elements
+    this.background.draw(this.ctx);
     this.ground.draw(this.ctx);
     this.player.draw(this.ctx);
     this.obstacleManager.draw();
@@ -71,6 +82,8 @@ class Game {
     // Updates
     if (this.isPlaying && !this.isGameOver) {
       this.updatePlayer();
+      this.ground.update(this.gameSpeed);
+      this.background.update(this.gameSpeed);
       this.obstacleManager.update(deltatime, this.gameSpeed);
       this.scoreManager.update(deltatime);
       this.gameSpeed += 0.3 * (deltatime / 1000);
@@ -91,6 +104,10 @@ class Game {
       if (event.code === 'Space') {
         this.handleGameAction();
       }
+    });
+
+    window.addEventListener('touchstart', () => {
+      this.handleGameAction();
     });
   }
 
@@ -127,6 +144,17 @@ class Game {
     }
 
     this.player.update(this.canvas);
+  }
+
+  private setupCanvas(): void {
+    let resizeTimeout: NodeJS.Timeout;
+
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        this.initializeGame();
+      }, 100);
+    });
   }
 }
 

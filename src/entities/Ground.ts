@@ -20,14 +20,29 @@ export default class Ground {
     ctx.fillStyle = GROUND_COLOR;
     ctx.fillRect(this.x, this.y, this.width, this.height);
 
-    for (let i = 0; i < tilesX; i++) {
-      ctx.drawImage(
-        this.sprite,
-        this.x + i * GROUND_TILE_SIZE,
-        this.y,
-        GROUND_TILE_SIZE,
-        GROUND_TILE_SIZE,
-      );
+    for (let i = 0; i < 2; i++) {
+      const offsetX = this.x + i * this.width;
+
+      ctx.fillStyle = GROUND_COLOR;
+      ctx.fillRect(offsetX, this.y, this.width, this.height);
+
+      for (let j = 0; j < tilesX; j++) {
+        ctx.drawImage(
+          this.sprite,
+          this.x + j * GROUND_TILE_SIZE,
+          this.y,
+          GROUND_TILE_SIZE,
+          GROUND_TILE_SIZE,
+        );
+      }
+    }
+  }
+
+  public update(gameSpeed: number): void {
+    this.x -= gameSpeed;
+
+    if (this.x <= -this.width) {
+      this.x = 0;
     }
   }
 }

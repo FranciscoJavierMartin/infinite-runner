@@ -1,22 +1,21 @@
-import { GROUND_HEIGHT } from '@/constants';
+import { GROUND_HEIGHT, PLAYER_SPRITE_SIZE } from '@/constants';
+import Sprite from '@/entities/Sprite';
+import playerSprite from '/player.png';
 
-export default class Player {
+export default class Player extends Sprite {
   private dy: number = 0;
   private grounded: boolean = true;
 
-  constructor(
-    public x: number,
-    public y: number,
-    public width: number,
-    public height: number,
-    public color: string,
-  ) {
-    this.setupControls();
-  }
+  constructor(x: number, y: number) {
+    super(x, y, PLAYER_SPRITE_SIZE, PLAYER_SPRITE_SIZE, {
+      imageSrc: playerSprite,
+      spriteWidth: PLAYER_SPRITE_SIZE,
+      spriteHeight: PLAYER_SPRITE_SIZE,
+      frameSpacing: 192,
+      frameCount: 16,
+    });
 
-  public draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    this.setupControls();
   }
 
   public update(canvas: HTMLCanvasElement): void {
@@ -31,6 +30,8 @@ export default class Player {
       this.grounded = true;
       this.y = groundY - this.height;
     }
+
+    super.updateAnimation();
   }
 
   public jump(jumpHeight: number = -20): void {
@@ -53,6 +54,10 @@ export default class Player {
       if (e.code === 'Space') {
         this.jump();
       }
+    });
+
+    window.addEventListener('touchstart', () => {
+      this.jump();
     });
   }
 }

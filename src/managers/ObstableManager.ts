@@ -47,12 +47,18 @@ export default class ObstacleManager {
   }
 
   public checkCollision(player: Player): boolean {
+    const collisionCompensation = 15;
+
     return this.obstacles.some(
       (obstacle) =>
-        player.x < obstacle.x + obstacle.width &&
-        player.x + player.width > obstacle.x &&
-        player.y < obstacle.y + obstacle.height &&
-        player.y + player.height > obstacle.y,
+        player.x + collisionCompensation <
+          obstacle.x + obstacle.width - collisionCompensation &&
+        player.x + player.width - collisionCompensation >
+          obstacle.x + collisionCompensation &&
+        player.y + collisionCompensation <
+          obstacle.y + obstacle.height - collisionCompensation &&
+        player.y + player.height - collisionCompensation >
+          obstacle.y + collisionCompensation,
     );
   }
 
@@ -66,9 +72,6 @@ export default class ObstacleManager {
     const obstacle = new Obstacle(
       this.canvas.width,
       this.canvas.height - GROUND_HEIGHT - y,
-      30,
-      70,
-      '#fff000',
     );
     this.obstacles.push(obstacle);
   }
